@@ -14,13 +14,14 @@ class AppCoordinator {
     var presentingSheet: Destination?
     var presentingFullScreenCover: Destination?
     
+    private let viewFactory: ViewFactory
+    
+    init(viewFactory: ViewFactory = DefaultViewFactory()) {
+        self.viewFactory = viewFactory
+    }
+    
     @ViewBuilder func view(for destination: Destination) -> some View {
-        switch destination {
-        case .home: AnyView(createView1())
-        case .details: AnyView(createView2())
-        case .firstCover: AnyView(createView3())
-            
-        }
+        viewFactory.makeView(for: destination, coordinator: self)
     }
     
     func RootView() -> some View {
@@ -59,31 +60,5 @@ enum Destination: Identifiable {
         case .details: return "details"
         case .firstCover: return "firstCover"
         }
-    }
-}
-
-extension AppCoordinator {
-    private func createView1() -> some View {
-        View1(onNavigate: { [weak self] in
-            self?.navigateToDetails()
-        }, onClose: { [weak self] in
-            self?.popToRoot()
-        })
-    }
-    
-    private func createView2() -> some View {
-        View2(onNavigate: { [weak self] in
-            self?.navigateToFirstCover()
-        }, onClose: { [weak self] in
-            self?.popToRoot()
-        })
-    }
-    
-    private func createView3() -> some View {
-        View3(onNavigate: { // [weak self] in
-            // self?.navigateToDetails()
-        }, onClose: { [weak self] in
-            self?.popToRoot()
-        })
     }
 }
