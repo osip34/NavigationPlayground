@@ -10,9 +10,8 @@ import SwiftUI
 
 @Observable
 class AppCoordinator {
-    var navigationStackPath: [Destination] = []
-    var presentingSheet: Destination?
-    var presentingFullScreenCover: Destination?
+    var rootState = NavigationState()
+    var modalStates: [String: NavigationState] = [:]
     
     private let viewFactory: ViewFactory
     
@@ -20,22 +19,22 @@ class AppCoordinator {
         self.viewFactory = viewFactory
     }
     
-    @ViewBuilder func view(for destination: Destination) -> some View {
+    @ViewBuilder func view(for destination: Destination, state: NavigationState) -> some View {
         switch destination {
         case .home:
             viewFactory.makeView1(
-                onNavigate: { [weak self] in self?.navigateToDetails() },
-                onClose: { [weak self] in self?.backToRoot() }
+                onNavigate: { [weak self] in self?.navigateToDetails(state: state) },
+                onClose: { [weak self] in self?.backToRoot(state: state) }
             )
         case .details:
             viewFactory.makeView2(
-                onNavigate: { [weak self] in self?.navigateToFirstCover() },
-                onClose: { [weak self] in self?.backToRoot() }
+                onNavigate: { [weak self] in self?.navigateToFirstCover(state: state) },
+                onClose: { [weak self] in self?.backToRoot(state: state) }
             )
         case .firstCover:
             viewFactory.makeView3(
                 onNavigate: {},
-                onClose: { [weak self] in self?.backToRoot() }
+                onClose: { [weak self] in self?.backToRoot(state: state) }
             )
         }
     }
@@ -45,25 +44,29 @@ class AppCoordinator {
             content: { ContentView(onTap: { [weak self] in
                 self?.navigateToFirstView()
             }) },
-            router: self)
+            router: self,
+            state: rootState)
     }
     
     func navigateToFirstView() {
-        navigationStackPath.append(.home)
+        rootState.navigationStackPath.append(.home)
     }
     
-    func navigateToDetails() {
-        navigationStackPath.append(.details)
+    func navigateToDetails(state: NavigationState) {
+        state.navigationStackPath.append(.details)
     }
     
-    func navigateToFirstCover() {
-        presentingFullScreenCover = .firstCover
+    func navigateToFirstCover(state: NavigationState) {
+        let modalState = NavigationState()
+        modalState.navigationStackPath = [.firstCover]
+        modalStates["firstCover"] = modalState
+        state.presentingFullScreenCover = .firstCover
     }
     
-    func backToRoot() {
-        navigationStackPath.removeAll()
-        presentingSheet = nil
-        presentingFullScreenCover = nil
+    func backToRoot(state: NavigationState) {
+        state.navigationStackPath.removeAll()
+        state.presentingSheet = nil
+        state.presentingFullScreenCover = nil
     }
 }
 
