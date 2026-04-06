@@ -21,7 +21,23 @@ class AppCoordinator {
     }
     
     @ViewBuilder func view(for destination: Destination) -> some View {
-        viewFactory.makeView(for: destination, coordinator: self)
+        switch destination {
+        case .home:
+            viewFactory.makeView1(
+                onNavigate: { [weak self] in self?.navigateToDetails() },
+                onClose: { [weak self] in self?.popToRoot() }
+            )
+        case .details:
+            viewFactory.makeView2(
+                onNavigate: { [weak self] in self?.navigateToFirstCover() },
+                onClose: { [weak self] in self?.popToRoot() }
+            )
+        case .firstCover:
+            viewFactory.makeView3(
+                onNavigate: {},
+                onClose: { [weak self] in self?.popToRoot() }
+            )
+        }
     }
     
     func RootView() -> some View {

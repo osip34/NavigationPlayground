@@ -7,11 +7,7 @@
 
 import SwiftUI
 
-/// ``NavigationStack`` container that works with the ``Router``
-/// to resolve the routes based on the ``Router``'s state
 struct NavigationContainer<Content: View>: View {
-    // The navigation container itself it's in charge of the lifecycle
-    // of the router.
     @Bindable var router: AppCoordinator
     @ViewBuilder var content: () -> Content
 
@@ -30,8 +26,6 @@ struct NavigationContainer<Content: View>: View {
                     router.view(for: destination)
                 }
         }
-        // it's important that the these modifiers are **outside** the `NavigationStack`
-        // otherwise the content closure will be called infinitely freezing the app
         .sheet(item: $router.presentingSheet) { sheet in
             router.view(for: sheet)
         }
@@ -40,18 +34,4 @@ struct NavigationContainer<Content: View>: View {
         }
     }
 }
-
-//    @ViewBuilder func navigationView(for destination: SheetDestination, from router: Router) -> some View {
-//        NavigationContainer(parentRouter: router) { view(for: destination) }
-//    }
-//
-//    @ViewBuilder func navigationView(for destination: FullScreenDestination, from router: Router) -> some View {
-//        NavigationContainer(parentRouter: router) { view(for: destination) }
-//    }
-
-//#Preview {
-//    NavigationContainer(parentRouter: .previewRouter()) {
-//        Text("Hello")
-//    }
-//}
 

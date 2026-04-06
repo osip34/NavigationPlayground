@@ -8,49 +8,21 @@
 import SwiftUI
 
 protocol ViewFactory {
-    func makeView(for destination: Destination, coordinator: AppCoordinator) -> AnyView
+    func makeView1(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
+    func makeView2(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
+    func makeView3(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
 }
 
 final class DefaultViewFactory: ViewFactory {
-    func makeView(for destination: Destination, coordinator: AppCoordinator) -> AnyView {
-        switch destination {
-        case .home:
-            return AnyView(makeView1(coordinator: coordinator))
-        case .details:
-            return AnyView(makeView2(coordinator: coordinator))
-        case .firstCover:
-            return AnyView(makeView3(coordinator: coordinator))
-        }
+    func makeView1(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView {
+        AnyView(View1(onNavigate: onNavigate, onClose: onClose))
     }
     
-    private func makeView1(coordinator: AppCoordinator) -> some View {
-        View1(
-            onNavigate: { [weak coordinator] in
-                coordinator?.navigateToDetails()
-            },
-            onClose: { [weak coordinator] in
-                coordinator?.popToRoot()
-            }
-        )
+    func makeView2(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView {
+        AnyView(View2(onNavigate: onNavigate, onClose: onClose))
     }
     
-    private func makeView2(coordinator: AppCoordinator) -> some View {
-        View2(
-            onNavigate: { [weak coordinator] in
-                coordinator?.navigateToFirstCover()
-            },
-            onClose: { [weak coordinator] in
-                coordinator?.popToRoot()
-            }
-        )
-    }
-    
-    private func makeView3(coordinator: AppCoordinator) -> some View {
-        View3(
-            onNavigate: {},
-            onClose: { [weak coordinator] in
-                coordinator?.popToRoot()
-            }
-        )
+    func makeView3(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView {
+        AnyView(View3(onNavigate: onNavigate, onClose: onClose))
     }
 }
