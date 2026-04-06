@@ -24,17 +24,17 @@ class AppCoordinator {
         case .home:
             viewFactory.makeView1(
                 onNavigate: { [weak self] in self?.navigateToDetails(state: state) },
-                onClose: { [weak self] in self?.backToRoot(state: state) }
+                onClose: { [weak self] in self?.backToRoot() }
             )
         case .details:
             viewFactory.makeView2(
                 onNavigate: { [weak self] in self?.navigateToFirstCover(state: state) },
-                onClose: { [weak self] in self?.backToRoot(state: state) }
+                onClose: { [weak self] in self?.backToRoot() }
             )
         case .firstCover:
             viewFactory.makeView3(
                 onNavigate: {},
-                onClose: { [weak self] in self?.backToRoot(state: state) }
+                onClose: { [weak self] in self?.backToRoot() }
             )
         }
     }
@@ -58,15 +58,18 @@ class AppCoordinator {
     
     func navigateToFirstCover(state: NavigationState) {
         let modalState = NavigationState()
-        modalState.navigationStackPath = [.firstCover]
         modalStates["firstCover"] = modalState
         state.presentingFullScreenCover = .firstCover
     }
     
-    func backToRoot(state: NavigationState) {
-        state.navigationStackPath.removeAll()
-        state.presentingSheet = nil
-        state.presentingFullScreenCover = nil
+    func backToRoot() {
+        // Reset root state
+        rootState.navigationStackPath.removeAll()
+        rootState.presentingSheet = nil
+        rootState.presentingFullScreenCover = nil
+        
+        // Clear all modal states
+        modalStates.removeAll()
     }
 }
 

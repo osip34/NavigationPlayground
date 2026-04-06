@@ -31,19 +31,20 @@ struct NavigationContainer<Content: View>: View {
         }
         .sheet(item: $state.presentingSheet) { sheet in
             let modalState = router.modalStates[sheet.id] ?? NavigationState()
-            NavigationContainer(
-                content: { router.view(for: sheet, state: modalState) },
-                router: router,
-                state: modalState
-            )
+            viewForModalPresentation(destination: sheet, state: modalState, router: router)
         }
         .fullScreenCover(item: $state.presentingFullScreenCover) { fullScreen in
             let modalState = router.modalStates[fullScreen.id] ?? NavigationState()
-            NavigationContainer(
-                content: { router.view(for: fullScreen, state: modalState) },
-                router: router,
-                state: modalState
-            )
+            viewForModalPresentation(destination: fullScreen, state: modalState, router: router)
         }
     }
 }
+
+@ViewBuilder func viewForModalPresentation(destination:Destination, state: NavigationState, router: AppCoordinator) -> some View {
+    NavigationContainer(
+        content: { router.view(for: destination, state: state) },
+        router: router,
+        state: state
+    )
+}
+
