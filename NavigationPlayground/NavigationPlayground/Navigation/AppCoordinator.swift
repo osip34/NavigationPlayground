@@ -25,17 +25,17 @@ class AppCoordinator {
         case .home:
             viewFactory.makeView1(
                 onNavigate: { [weak self] in self?.navigateToDetails() },
-                onClose: { [weak self] in self?.popToRoot() }
+                onClose: { [weak self] in self?.backToRoot() }
             )
         case .details:
             viewFactory.makeView2(
                 onNavigate: { [weak self] in self?.navigateToFirstCover() },
-                onClose: { [weak self] in self?.popToRoot() }
+                onClose: { [weak self] in self?.backToRoot() }
             )
         case .firstCover:
             viewFactory.makeView3(
                 onNavigate: {},
-                onClose: { [weak self] in self?.popToRoot() }
+                onClose: { [weak self] in self?.backToRoot() }
             )
         }
     }
@@ -60,8 +60,10 @@ class AppCoordinator {
         presentingFullScreenCover = .firstCover
     }
     
-    func popToRoot() {
+    func backToRoot() {
         navigationStackPath.removeAll()
+        presentingSheet = nil
+        presentingFullScreenCover = nil
     }
 }
 
