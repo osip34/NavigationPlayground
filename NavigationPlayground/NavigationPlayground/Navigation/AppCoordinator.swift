@@ -11,12 +11,6 @@ import SwiftUI
 @Observable
 class AppCoordinator {
     var rootState = NavigationState()
-    var modalStates: [String: NavigationState] = [:] {
-        didSet {
-            print(oldValue)
-            print(modalStates)
-        }
-    }
     
     private let viewFactory: ViewFactory
     
@@ -72,14 +66,12 @@ class AppCoordinator {
     }
     
     func navigateToFirstCover(state: NavigationState) {
-        let modalState = NavigationState()
-        modalStates["firstCover"] = modalState
+        state.fullScreenCoverState = NavigationState()
         state.presentingFullScreenCover = .firstCover
     }
     
     func navigateToSecondCover(state: NavigationState) {
-        let modalState = NavigationState()
-        modalStates["secondCover"] = modalState
+        state.sheetState = NavigationState()
         state.presentingSheet = .secondCover
     }
     
@@ -92,9 +84,8 @@ class AppCoordinator {
         rootState.navigationStackPath.removeAll()
         rootState.presentingSheet = nil
         rootState.presentingFullScreenCover = nil
-        
-        // Clear all modal states
-        modalStates.removeAll()
+        rootState.sheetState = nil
+        rootState.fullScreenCoverState = nil
     }
 }
 

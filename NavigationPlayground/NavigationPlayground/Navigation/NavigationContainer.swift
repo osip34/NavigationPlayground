@@ -30,21 +30,22 @@ struct NavigationContainer<Content: View>: View {
                 }
         }
         .sheet(item: $state.presentingSheet) { sheet in
-            let modalState = router.modalStates[sheet.id] ?? NavigationState()
-            viewForModalPresentation(destination: sheet, state: modalState, router: router)
+            if let modalState = state.sheetState {
+                viewForModalPresentation(destination: sheet, state: modalState, router: router)
+            }
         }
         .fullScreenCover(item: $state.presentingFullScreenCover) { fullScreen in
-            let modalState = router.modalStates[fullScreen.id] ?? NavigationState()
-            viewForModalPresentation(destination: fullScreen, state: modalState, router: router)
+            if let modalState = state.fullScreenCoverState {
+                viewForModalPresentation(destination: fullScreen, state: modalState, router: router)
+            }
         }
     }
 }
 
-@ViewBuilder func viewForModalPresentation(destination:Destination, state: NavigationState, router: AppCoordinator) -> some View {
+@ViewBuilder func viewForModalPresentation(destination: Destination, state: NavigationState, router: AppCoordinator) -> some View {
     NavigationContainer(
         content: { router.view(for: destination, state: state) },
         router: router,
         state: state
     )
 }
-
