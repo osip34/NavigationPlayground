@@ -11,6 +11,7 @@ protocol ViewFactory {
     func makeView1(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
     func makeView2(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
     func makeView3(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
+    func makeView4(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView
 }
 
 final class DefaultViewFactory: ViewFactory {
@@ -24,5 +25,9 @@ final class DefaultViewFactory: ViewFactory {
     
     func makeView3(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView {
         AnyView(View3(onNavigate: onNavigate, onClose: onClose))
+    }
+    
+    func makeView4(onNavigate: @escaping () -> Void, onClose: @escaping () -> Void) -> AnyView {
+        AnyView(View4(onNavigate: onNavigate, onClose: onClose))
     }
 }

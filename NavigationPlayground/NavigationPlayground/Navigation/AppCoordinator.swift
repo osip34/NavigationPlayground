@@ -33,6 +33,11 @@ class AppCoordinator {
             )
         case .firstCover:
             viewFactory.makeView3(
+                onNavigate: { [weak self] in self?.navigateToSecondCover(state: state) },
+                onClose: { [weak self] in self?.backToRoot() }
+            )
+        case .secondCover:
+            viewFactory.makeView4(
                 onNavigate: {},
                 onClose: { [weak self] in self?.backToRoot() }
             )
@@ -62,6 +67,12 @@ class AppCoordinator {
         state.presentingFullScreenCover = .firstCover
     }
     
+    func navigateToSecondCover(state: NavigationState) {
+        let modalState = NavigationState()
+        modalStates["secondCover"] = modalState
+        state.presentingSheet = .secondCover
+    }
+    
     func backToRoot() {
         // Reset root state
         rootState.navigationStackPath.removeAll()
@@ -77,12 +88,14 @@ enum Destination: Identifiable {
     case home
     case details
     case firstCover
+    case secondCover
 
     var id: String {
         switch self {
         case .home: return "home"
         case .details: return "details"
         case .firstCover: return "firstCover"
+        case .secondCover: return "secondCover"
         }
     }
 }
