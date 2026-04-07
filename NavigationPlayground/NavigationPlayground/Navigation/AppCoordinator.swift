@@ -11,7 +11,12 @@ import SwiftUI
 @Observable
 class AppCoordinator {
     var rootState = NavigationState()
-    var modalStates: [String: NavigationState] = [:]
+    var modalStates: [String: NavigationState] = [:] {
+        didSet {
+            print(oldValue)
+            print(modalStates)
+        }
+    }
     
     private let viewFactory: ViewFactory
     
@@ -38,6 +43,11 @@ class AppCoordinator {
             )
         case .secondCover:
             viewFactory.makeView4(
+                onNavigate: { [weak self] in self?.navigateToThirdDestination(state: state) },
+                onClose: { [weak self] in self?.backToRoot() }
+            )
+        case .thirdDestination:
+            viewFactory.makeView5(
                 onNavigate: {},
                 onClose: { [weak self] in self?.backToRoot() }
             )
@@ -73,6 +83,10 @@ class AppCoordinator {
         state.presentingSheet = .secondCover
     }
     
+    func navigateToThirdDestination(state: NavigationState) {
+        state.navigationStackPath.append(.thirdDestination)
+    }
+    
     func backToRoot() {
         // Reset root state
         rootState.navigationStackPath.removeAll()
@@ -89,6 +103,7 @@ enum Destination: Identifiable {
     case details
     case firstCover
     case secondCover
+    case thirdDestination
 
     var id: String {
         switch self {
@@ -96,6 +111,7 @@ enum Destination: Identifiable {
         case .details: return "details"
         case .firstCover: return "firstCover"
         case .secondCover: return "secondCover"
+        case .thirdDestination: return "thirdDestination"
         }
     }
 }

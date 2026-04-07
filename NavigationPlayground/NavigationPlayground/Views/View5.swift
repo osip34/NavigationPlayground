@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct View5: View {
+    let onNavigate: () -> Void
+    let onClose: () -> Void
+    
     var body: some View {
         ZStack {
             Color.purple.opacity(0.3)
@@ -19,14 +22,19 @@ struct View5: View {
                     .fontWeight(.bold)
                 
                 Button("Navigate") {
-                    // No action for now
+                    onNavigate()
                 }
                 .buttonStyle(.borderedProminent)
+                
+                Button("Close") {
+                    onClose()
+                }
+                .buttonStyle(.bordered)
             }
         }
     }
 }
 
 #Preview {
-    View5()
+    View5(onNavigate: {}, onClose: {})
 }
