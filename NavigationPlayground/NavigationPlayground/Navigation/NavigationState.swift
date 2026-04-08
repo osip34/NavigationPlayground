@@ -12,19 +12,11 @@ class NavigationState {
     var navigationStackPath: [Destination] = []
     
     var presentingSheet: Destination? {
-        didSet {
-            if presentingSheet == nil {
-                sheetState = nil
-            }
-        }
+        didSet { if presentingSheet == nil { sheetState = nil } }
     }
     
     var presentingFullScreenCover: Destination? {
-        didSet {
-            if presentingFullScreenCover == nil {
-                fullScreenCoverState = nil
-            }
-        }
+        didSet { if presentingFullScreenCover == nil { fullScreenCoverState = nil } }
     }
     
     // Nested modal states
