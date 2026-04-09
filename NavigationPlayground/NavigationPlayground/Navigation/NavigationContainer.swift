@@ -9,12 +9,12 @@ import SwiftUI
 
 struct NavigationContainer<Content: View>: View {
     @Bindable var state: NavigationState
-    let router: AppCoordinator
+    let router: Coordinator
     @ViewBuilder var content: () -> Content
 
     init(
         @ViewBuilder content: @escaping () -> Content,
-        router: AppCoordinator,
+        router: Coordinator,
         state: NavigationState
     ) {
         self.state = state
@@ -42,7 +42,7 @@ struct NavigationContainer<Content: View>: View {
     }
 }
 
-@ViewBuilder func viewForModalPresentation(destination: Destination, state: NavigationState, router: AppCoordinator) -> some View {
+@ViewBuilder func viewForModalPresentation(destination: Destination, state: NavigationState, router: Coordinator) -> some View {
     NavigationContainer(
         content: { router.view(for: destination, state: state) },
         router: router,

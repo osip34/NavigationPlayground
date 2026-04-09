@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-class AppCoordinator {
+class AppCoordinator: Coordinator {
     var rootState = NavigationState()
     
     private let viewFactory: ViewFactory
@@ -18,43 +18,47 @@ class AppCoordinator {
         self.viewFactory = viewFactory
     }
     
-    @ViewBuilder func view(for destination: Destination, state: NavigationState) -> some View {
+    func view(for destination: Destination, state: NavigationState) -> AnyView {
+        let view: AnyView
+        
         switch destination {
         case .home:
-            viewFactory.makeView1(
+            view = viewFactory.makeView1(
                 onNavigate: { [weak self] in self?.navigateToDetails(state: state) },
                 onClose: { [weak self] in self?.backToRoot() }
             )
         case .details:
-            viewFactory.makeView2(
+            view = viewFactory.makeView2(
                 onNavigate: { [weak self] in self?.navigateToFirstCover(state: state) },
                 onClose: { [weak self] in self?.backToRoot() }
             )
         case .firstCover:
-            viewFactory.makeView3(
+            view = viewFactory.makeView3(
                 onNavigate: { [weak self] in self?.navigateToSecondCover(state: state) },
                 onClose: { [weak self] in self?.backToRoot() }
             )
         case .secondCover:
-            viewFactory.makeView4(
+            view = viewFactory.makeView4(
                 onNavigate: { [weak self] in self?.navigateToThirdDestination(state: state) },
                 onClose: { [weak self] in self?.backToRoot() }
             )
         case .thirdDestination:
-            viewFactory.makeView5(
+            view = viewFactory.makeView5(
                 onNavigate: {},
                 onClose: { [weak self] in self?.backToRoot() }
             )
         }
+        
+        return view
     }
     
-    func RootView() -> some View {
-        NavigationContainer(
+    func RootView() -> AnyView {
+        AnyView(NavigationContainer(
             content: { ContentView(onTap: { [weak self] in
                 self?.navigateToFirstView()
             }) },
             router: self,
-            state: rootState)
+            state: rootState))
     }
     
     func navigateToFirstView() {
@@ -89,7 +93,7 @@ class AppCoordinator {
     }
 }
 
-enum Destination: Identifiable {
+enum Destination: String, Identifiable {
     case home
     case details
     case firstCover
@@ -97,12 +101,6 @@ enum Destination: Identifiable {
     case thirdDestination
 
     var id: String {
-        switch self {
-        case .home: return "home"
-        case .details: return "details"
-        case .firstCover: return "firstCover"
-        case .secondCover: return "secondCover"
-        case .thirdDestination: return "thirdDestination"
-        }
+        return self.rawValue
     }
 }
