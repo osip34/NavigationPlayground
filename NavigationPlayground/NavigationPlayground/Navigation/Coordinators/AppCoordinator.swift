@@ -92,15 +92,3 @@ class AppCoordinator: Coordinator {
         rootState.fullScreenCoverState = nil
     }
 }
-
-enum Destination: String, Identifiable {
-    case home
-    case details
-    case firstCover
-    case secondCover
-    case thirdDestination
-
-    var id: String {
-        return self.rawValue
-    }
-}

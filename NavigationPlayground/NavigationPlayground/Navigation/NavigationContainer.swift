@@ -8,44 +8,45 @@
 import SwiftUI
 
 struct NavigationContainer<Content: View>: View {
-    @Bindable var state: NavigationState
-    let router: Coordinator
     @ViewBuilder var content: () -> Content
+    
+    @Bindable var state: NavigationState
+    let viewProvider: ViewProvider
 
     init(
         @ViewBuilder content: @escaping () -> Content,
-        router: Coordinator,
+        viewProvider: ViewProvider,
         state: NavigationState
     ) {
-        self.state = state
-        self.router = router
         self.content = content
+        self.state = state
+        self.viewProvider = viewProvider
     }
 
     var body: some View {
         NavigationStack(path: $state.navigationStackPath) {
             content()
                 .navigationDestination(for: Destination.self) { destination in
-                    router.view(for: destination, state: state)
+                    viewProvider.view(for: destination, state: state)
                 }
         }
         .sheet(item: $state.presentingSheet) { sheet in
             if let modalState = state.sheetState {
-                viewForModalPresentation(destination: sheet, state: modalState, router: router)
+                viewForModalPresentation(destination: sheet, state: modalState, viewProvider: viewProvider)
             }
         }
         .fullScreenCover(item: $state.presentingFullScreenCover) { fullScreen in
             if let modalState = state.fullScreenCoverState {
-                viewForModalPresentation(destination: fullScreen, state: modalState, router: router)
+                viewForModalPresentation(destination: fullScreen, state: modalState, viewProvider: viewProvider)
             }
         }
     }
 }
 
-@ViewBuilder func viewForModalPresentation(destination: Destination, state: NavigationState, router: Coordinator) -> some View {
+@ViewBuilder func viewForModalPresentation(destination: Destination, state: NavigationState, viewProvider: ViewProvider) -> some View {
     NavigationContainer(
-        content: { router.view(for: destination, state: state) },
-        router: router,
+        content: { viewProvider.view(for: destination, state: state) },
+        viewProvider: viewProvider,
         state: state
     )
 }
