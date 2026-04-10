@@ -9,19 +9,8 @@ import SwiftUI
 
 struct NavigationContainer<Content: View>: View {
     @ViewBuilder var content: () -> Content
-    
     @Bindable var state: NavigationState
     let viewProvider: ViewProvider
-
-    init(
-        @ViewBuilder content: @escaping () -> Content,
-        viewProvider: ViewProvider,
-        state: NavigationState
-    ) {
-        self.content = content
-        self.state = state
-        self.viewProvider = viewProvider
-    }
 
     var body: some View {
         NavigationStack(path: $state.navigationStackPath) {
@@ -43,10 +32,11 @@ struct NavigationContainer<Content: View>: View {
     }
 }
 
+//MARK: - Modal Presentation Helper
 @ViewBuilder func viewForModalPresentation(destination: Destination, state: NavigationState, viewProvider: ViewProvider) -> some View {
     NavigationContainer(
         content: { viewProvider.view(for: destination, state: state) },
-        viewProvider: viewProvider,
-        state: state
+        state: state,
+        viewProvider: viewProvider
     )
 }

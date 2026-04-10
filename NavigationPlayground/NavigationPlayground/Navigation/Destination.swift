@@ -5,8 +5,6 @@
 //  Created by Andrii Osipchuk on 09.04.2026.
 //
 
-import Foundation
-
 enum Destination: String, Identifiable {
     case home
     case details

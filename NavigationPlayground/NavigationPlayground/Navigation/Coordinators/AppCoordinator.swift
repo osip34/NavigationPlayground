@@ -5,19 +5,60 @@
 //  Created by Andrii Osipchuk on 02.04.2026.
 //
 
-import Foundation
 import SwiftUI
 
 @Observable
 class AppCoordinator: Coordinator {
-    var rootState = NavigationState()
-    
     private let viewFactory: ViewFactory
+    var rootState = NavigationState()
     
     init(viewFactory: ViewFactory = DefaultViewFactory()) {
         self.viewFactory = viewFactory
     }
     
+    // MARK: - Root View
+    func RootView() -> AnyView {
+        let rootView = ContentView(onTap: { [weak self] in
+                self?.navigateToFirstView()
+            })
+        let navigationContainer = NavigationContainer(content: { rootView }, state: rootState, viewProvider: self)
+        
+        return AnyView(navigationContainer)
+    }
+    
+    // MARK: - Navigation Actions
+    private func navigateToFirstView() {
+        rootState.navigationStackPath.append(.home)
+    }
+    
+    private func navigateToDetails(state: NavigationState) {
+        state.navigationStackPath.append(.details)
+    }
+    
+    private func navigateToFirstCover(state: NavigationState) {
+        state.fullScreenCoverState = NavigationState()
+        state.presentingFullScreenCover = .firstCover
+    }
+    
+    private func navigateToSecondCover(state: NavigationState) {
+        state.sheetState = NavigationState()
+        state.presentingSheet = .secondCover
+    }
+    
+    private func navigateToThirdDestination(state: NavigationState) {
+        state.navigationStackPath.append(.thirdDestination)
+    }
+    
+    private func backToRoot() {
+        // Reset root state
+        rootState.navigationStackPath.removeAll()
+        rootState.presentingSheet = nil
+        rootState.presentingFullScreenCover = nil
+    }
+}
+
+// MARK: - View Provider
+extension AppCoordinator: ViewProvider {
     func view(for destination: Destination, state: NavigationState) -> AnyView {
         let view: AnyView
         
@@ -50,45 +91,5 @@ class AppCoordinator: Coordinator {
         }
         
         return view
-    }
-    
-    func RootView() -> AnyView {
-        AnyView(NavigationContainer(
-            content: { ContentView(onTap: { [weak self] in
-                self?.navigateToFirstView()
-            }) },
-            router: self,
-            state: rootState))
-    }
-    
-    func navigateToFirstView() {
-        rootState.navigationStackPath.append(.home)
-    }
-    
-    func navigateToDetails(state: NavigationState) {
-        state.navigationStackPath.append(.details)
-    }
-    
-    func navigateToFirstCover(state: NavigationState) {
-        state.fullScreenCoverState = NavigationState()
-        state.presentingFullScreenCover = .firstCover
-    }
-    
-    func navigateToSecondCover(state: NavigationState) {
-        state.sheetState = NavigationState()
-        state.presentingSheet = .secondCover
-    }
-    
-    func navigateToThirdDestination(state: NavigationState) {
-        state.navigationStackPath.append(.thirdDestination)
-    }
-    
-    func backToRoot() {
-        // Reset root state
-        rootState.navigationStackPath.removeAll()
-        rootState.presentingSheet = nil
-        rootState.presentingFullScreenCover = nil
-        rootState.sheetState = nil
-        rootState.fullScreenCoverState = nil
     }
 }
